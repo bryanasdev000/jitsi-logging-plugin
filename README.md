@@ -1,0 +1,2 @@
+# jitsi-logging-plugin
+WIP
