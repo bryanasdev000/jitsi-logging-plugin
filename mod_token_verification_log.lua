@@ -12,6 +12,7 @@ local log = module._log;
 local host = module.host;
 local st = require "util.stanza";
 local is_admin = require "core.usermanager".is_admin;
+local time = require "util.time";
 -- External lib
 local json = require "cjson";
 local basexx = require "basexx";
@@ -64,9 +65,10 @@ log("debug",
 	tostring(host), tostring(token_util.appId), tostring(token_util.appSecret),
 	tostring(token_util.allowEmptyToken));
 
---local function response_check(response_body, response_code, response)
---	log("info","REGISTER POST %s - %s - %s", tostring(response_body), tostring(response_code), tostring(response));
---end
+local function response_check(response_body, response_code, response)
+	log("info","REGISTER CALLBACK");
+	return true;
+end
 
 local function presence_log(session, stanza, action)
 	log("info", "Presence logger - token: %s, session room: %s",
@@ -108,18 +110,16 @@ local function presence_log(session, stanza, action)
 			log("info", "REGISTER GroupID %s", tostring(body["groupid"]));
 			log("info", "REGISTER CourseID %s", tostring(body["courseid"]));
 			log("info", "REGISTER User %s", tostring(body["context"]["user"]["name"]));
-			-- log("info", "REGISTER Timestamp UTC %d",os.time(os.date('!*t')));
+			log("info", "REGISTER Timestamp UTC %d",time.now());
 			log("info", "REGISTER Action %s", tostring(action));
 			local options = {
 				headers = {
 					["Content-Type"] = "application/json";
 				};
-				body = string.format('{"sala":"%s","email":"%s","turma":%d,"curso":%d,"aluno":"%s","timestamp":%d,"action":"%s"}',tostring(body["room"]),tostring(body["email"]),tostring(body["groupid"]),tostring(body["courseid"]),tostring(body["context"]["user"]["name"]),1,tostring(action));
+				body = string.format('{"sala":"%s","email":"%s","turma":%d,"curso":%d,"aluno":"%s","timestamp":%d,"action":"%s"}',tostring(body["room"]),tostring(body["email"]),tostring(body["groupid"]),tostring(body["courseid"]),tostring(body["context"]["user"]["name"]),time.now(),tostring(action));
 			}; 
 			req = http.request("https://teste-lua-jitsi.free.beeceptor.com/my/api/path",options,log());
-			-- Set contet type to JSON
-			-- Get UTC timestamp
-			-- Create and send table with args
+			return true;
 			-- Work with callback status code != 200		
 		end;
 	else
