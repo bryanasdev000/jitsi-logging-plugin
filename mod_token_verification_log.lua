@@ -108,8 +108,19 @@ local function presence_log(session, stanza, action)
 			log("info", "REGISTER GroupID %s", tostring(body["groupid"]));
 			log("info", "REGISTER CourseID %s", tostring(body["courseid"]));
 			log("info", "REGISTER User %s", tostring(body["context"]["user"]["name"]));
+			-- log("info", "REGISTER Timestamp UTC %d",os.time(os.date('!*t')));
 			log("info", "REGISTER Action %s", tostring(action));
-			req = http.request("http://httpbin.org/get",nil);		
+			local options = {
+				headers = {
+					["Content-Type"] = "application/json";
+				};
+				body = string.format('{"sala":"%s","email":"%s","turma":%d,"curso":%d,"aluno":"%s","timestamp":%d,"action":"%s"}',tostring(body["room"]),tostring(body["email"]),tostring(body["groupid"]),tostring(body["courseid"]),tostring(body["context"]["user"]["name"]),1,tostring(action));
+			}; 
+			req = http.request("https://teste-lua-jitsi.free.beeceptor.com/my/api/path",options,log());
+			-- Set contet type to JSON
+			-- Get UTC timestamp
+			-- Create and send table with args
+			-- Work with callback status code != 200		
 		end;
 	else
 		log("error","Presence logger - Failed to decode JWT");
