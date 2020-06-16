@@ -17,10 +17,9 @@ local basexx = require "basexx";
 -- TODO
 -- Status code da requisicao + callback
 -- License
+-- Internationalization
 -- FUTURE TODO
 -- Healthcheck do user (Speakerstats)
--- JID
--- Reconhecer o Jicofo na primeira entrada na sala
 
 
 -- module init
@@ -37,14 +36,12 @@ end
 
 -- main guy
 local function presence_log(session, stanza, action, datetime)
-  log("info", "Presence logger - token: %s, session room: %s",
-  tostring(session.auth_token),
-  tostring(session.jitsi_meet_room));
-
-  log("info","Presence logger - user: %s to entered room: %s", stanza.attr.from, stanza.attr.to);
-
-  -- JWT + req magic
   if session.auth_token then
+    log("info", "Presence logger - token: %s, session room: %s",
+    tostring(session.auth_token),
+    tostring(session.jitsi_meet_room));
+    log("info","Presence logger - user: %s entered room: %s", stanza.attr.from, stanza.attr.to);
+    -- JWT + req magic
     local dotFirst = session.auth_token:find("%.");
     if dotFirst then
       local dotSecond = session.auth_token:sub(dotFirst + 1):find("%.");
@@ -52,19 +49,20 @@ local function presence_log(session, stanza, action, datetime)
         local bodyB64 = session.auth_token:sub(dotFirst + 1, dotFirst + dotSecond - 1);
         local body = json.decode(basexx.from_url64(bodyB64));
         log("info", "Presence logger - REGISTER Sala %s", tostring(body.room));
-        log("info", "Presence logger - REGISTER Email %s", tostring(body.email));
-        log("info", "Presence logger - REGISTER GroupID %s", tostring(body.groupid));
         log("info", "Presence logger - REGISTER CourseID %s", tostring(body.courseid));
+        log("info", "Presence logger - REGISTER GroupID %s", tostring(body.groupid));
         log("info", "Presence logger - REGISTER User %s", tostring(body.context.user.name));
+        log("info", "Presence logger - REGISTER JID %s", tostring(stanza.attr.from));
+        log("info", "Presence logger - REGISTER Email %s", tostring(body.email));
         log("info", "Presence logger - REGISTER Timestamp UTC %d",datetime);
         log("info", "Presence logger - REGISTER Action %s", tostring(action));
         local options = {
           headers = {
             ["Content-Type"] = "application/json";
           };
-          body = string.format('{"sala":"%s","email":"%s","turma":%d,"curso":%d,"aluno":"%s","timestamp":%d,"action":"%s"}',
-          tostring(body.room), tostring(body.email), tostring(body.groupid), tostring(body.courseid),
-          tostring(body.context.user.name), datetime, tostring(action));
+          body = string.format('{"sala":"%s","curso":%d,"turma":%d,"aluno":"%s",jid":"%s","email":"%s","timestamp":%d,"action":"%s"}',
+          tostring(body.room), tostring(body.courseid), tostring(body.groupid), tostring(body.context.user.name),
+          tostring(stanza.attr.from), tostring(body.email), datetime, tostring(action));
         };
         req = http.request("https://teste-lua-jitsi.free.beeceptor.com/my/api/path",options,response_check());
         return true;
@@ -75,8 +73,12 @@ local function presence_log(session, stanza, action, datetime)
       log("error","Presence logger - Failed to decode JWT - First part");
     end;
   else
-    log("error", "Presence logger - No token available in session") 
-    -- First time always throw errors, probably jicofo opening the room.
+    if stanza.attr.to:find("focus") then
+      log("info", "Presence logger - Jicofo starting room: %s", tostring(stanza.attr.to));
+    else
+      log("info", "Presence logger - No token available in session: %s for user: %s ",
+      tostring(stanza.attr.to), tostring(stanza.attr.from));
+    end;
   end;
   -- JWT + req magic
 end
