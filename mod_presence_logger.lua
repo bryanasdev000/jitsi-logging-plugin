@@ -16,7 +16,6 @@ local basexx = require "basexx";
 
 -- TODO
 -- Status code da requisicao + callback
--- License
 -- Internationalization
 -- FUTURE TODO
 -- Healthcheck do user (Speakerstats)
