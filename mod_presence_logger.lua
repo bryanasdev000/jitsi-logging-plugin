@@ -15,6 +15,7 @@ local basexx = require "basexx";
 
 
 -- TODO
+-- URL com variavel
 -- Status code da requisicao + callback
 -- Internationalization
 -- FUTURE TODO
