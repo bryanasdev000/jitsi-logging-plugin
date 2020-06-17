@@ -1,7 +1,3 @@
--- Code spaghetti between mod_token_verification.lua (Jitsi Team),
--- mod_token_moderation (nvonahsen and Seekerofpie) and my own code.
-
-
 -- Prosody internal lib
 local log = module._log;
 local host = module.host;
@@ -12,14 +8,6 @@ local http = require "net.http";
 -- External lib
 local json = require "cjson";
 local basexx = require "basexx";
-
-
--- TODO
--- URL com variavel
--- Status code da requisicao + callback
--- Internationalization
--- FUTURE TODO
--- Healthcheck do user (Speakerstats)
 
 
 -- module init
