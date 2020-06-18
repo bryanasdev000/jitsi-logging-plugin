@@ -48,7 +48,7 @@ local function presence_log(session, stanza, action, datetime)
           headers = {
             ["Content-Type"] = "application/json";
           };
-          body = string.format('{"sala":"%s","curso":%d,"turma":%d,"aluno":"%s",jid":"%s","email":"%s","timestamp":%d,"action":"%s"}',
+          body = string.format('{"sala":"%s","curso":%d,"turma":%s,"aluno":"%s",jid":"%s","email":"%s","timestamp":%d,"action":"%s"}',
           tostring(body.room), tostring(body.courseid), tostring(body.groupid), tostring(body.context.user.name),
           tostring(stanza.attr.from), tostring(body.email), datetime, tostring(action));
         };
