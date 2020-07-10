@@ -20,7 +20,7 @@ Before the install of this plugin make sure you have your Jitsi using authentica
 
 
 - 1. Copy the lua file to the Jitsi Prosody plugins folder, usually `/usr/share/jitsi-meet/prosody-plugins/`.
-- 2. Open `/etc/prosody/conf.d/[YOUR DOMAIN].cfg.lua`, edit the conferance.[YOUR DOMAIN] component to add **presence_logger**. Change this line `modules_enabled = { [EXISTING MODULES] }` TO `modules_enabled = { [EXISTING MODULES]; "token_moderation" }`
+- 2. Open `/etc/prosody/conf.d/jitsi.domain.tld.cfg.lua`, edit the `Component "conference.jitsi.domain.tld" "muc` component to add **presence_logger**. Change this line `modules_enabled = { [EXISTING MODULES] }` TO `modules_enabled = { [EXISTING MODULES]; "presence_logger"; }`
 - 3. Restart prosody service.
 
 Your config file shoud look like that:
