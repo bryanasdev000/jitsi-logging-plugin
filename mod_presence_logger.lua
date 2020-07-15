@@ -5,6 +5,7 @@ local st = require "util.stanza";
 local is_admin = require "core.usermanager".is_admin;
 local time = require "util.time";
 local http = require "net.http";
+local datetime = require "util.datetime";
 -- External lib
 local json = require "cjson";
 local basexx = require "basexx";
@@ -42,15 +43,15 @@ local function presence_log(session, stanza, action, datetime)
         log("info", "Presence logger - REGISTER User %s", tostring(body.context.user.name));
         log("info", "Presence logger - REGISTER JID %s", tostring(stanza.attr.from));
         log("info", "Presence logger - REGISTER Email %s", tostring(body.email));
-        log("info", "Presence logger - REGISTER Timestamp UTC %d",datetime);
+        log("info", "Presence logger - REGISTER Timestamp %s",tostring(datetime));
         log("info", "Presence logger - REGISTER Action %s", tostring(action));
         local options = {
           headers = {
             ["Content-Type"] = "application/json";
           };
-          body = string.format('{"sala":"%s","curso":%d,"turma":"%s","aluno":"%s","jid":"%s","email":"%s","timestamp":%d,"action":"%s"}',
+          body = string.format('{"sala":"%s","curso":"%s","turma":"%s","aluno":"%s","jid":"%s","email":"%s","timestamp":"%s","action":"%s"}',
           tostring(body.room), tostring(body.courseid), tostring(body.groupid), tostring(body.context.user.name),
-          tostring(stanza.attr.from), tostring(body.email), datetime, tostring(action));
+          tostring(stanza.attr.from), tostring(body.email), tostring(datetime), tostring(action));
         };
         req = http.request("https://teste-lua-jitsi.free.beeceptor.com/my/api/path",options,response_check());
         return true;
@@ -75,12 +76,12 @@ end
 
 -- hooks
 module:hook("muc-occupant-joined", function(event)
-local origin, stanza, action, datetime = event.origin, event.stanza, "login", time.now();
+local origin, stanza, action, datetime = event.origin, event.stanza, "login", datetime.datetime();
 return presence_log(origin, stanza, action, datetime);
 end);
 
 module:hook("muc-occupant-pre-leave", function(event)
-local origin, room, stanza, action, datetime = event.origin, event.room, event.stanza, "logout", time.now();
+local origin, room, stanza, action, datetime = event.origin, event.room, event.stanza, "logout", datetime.datetime();
 return presence_log(origin, stanza, action, datetime);
 end);
 -- hooks
