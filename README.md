@@ -20,8 +20,9 @@ Before the install of this plugin make sure you have your Jitsi using authentica
 
 
 - 1. Copy the lua file to the Jitsi Prosody plugins folder, usually `/usr/share/jitsi-meet/prosody-plugins/`.
-- 2. Open `/etc/prosody/conf.d/jitsi.domain.tld.cfg.lua`, edit the `Component "conference.jitsi.domain.tld" "muc` component to add **presence_logger**. Change this line `modules_enabled = { [EXISTING MODULES] }` TO `modules_enabled = { [EXISTING MODULES]; "presence_logger"; }`
-- 3. Restart prosody service.
+- 2. Edit line [56](https://github.com/bryanasdev000/jitsi-logging-plugin/blob/master/mod_presence_logger.lua#L56) and set the URL to point to your [microservice-jitsi-log](https://github.com/bryanasdev000/microservice-jitsi-log).
+- 3. Open `/etc/prosody/conf.d/jitsi.domain.tld.cfg.lua`, edit the `Component "conference.jitsi.domain.tld" "muc` component to add **presence_logger**. Change this line `modules_enabled = { [EXISTING MODULES] }` TO `modules_enabled = { [EXISTING MODULES]; "presence_logger"; }`
+- 4. Restart prosody service.
 
 Your config file shoud look like that:
 
